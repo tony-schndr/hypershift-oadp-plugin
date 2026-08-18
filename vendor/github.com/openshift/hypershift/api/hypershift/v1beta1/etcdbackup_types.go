@@ -23,6 +23,7 @@ const (
 	BackupSucceededReason  string = "BackupSucceeded"
 	BackupFailedReason     string = "BackupFailed"
 	BackupInProgressReason string = "BackupInProgress"
+	BackupWaitingForCredentialsReason string = "BackupWaitingForCredentials"
 	BackupRejectedReason   string = "BackupRejected"
 	EtcdUnhealthyReason    string = "EtcdUnhealthy"
 )

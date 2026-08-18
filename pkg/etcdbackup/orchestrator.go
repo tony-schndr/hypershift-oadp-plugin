@@ -130,6 +130,9 @@ func (o *Orchestrator) VerifyInProgress(ctx context.Context) error {
 		case hyperv1.BackupSucceededReason:
 			o.log.Info("HCPEtcdBackup already succeeded")
 			return true, nil
+		case hyperv1.BackupWaitingForCredentialsReason:
+			o.log.Info("HCPEtcdBackup is waiting for credentials")
+			return true, nil
 		case hyperv1.BackupFailedReason:
 			return false, fmt.Errorf("HCPEtcdBackup failed: %s", cond.Message)
 		case hyperv1.BackupRejectedReason:
@@ -213,7 +216,9 @@ func (o *Orchestrator) fetchBSL(ctx context.Context, bslName, namespace string) 
 // so the etcd backup controller can use the same object store as OADP/Velero.
 //
 // The KeyPrefix follows Velero's backup directory layout:
-//   {bsl-prefix}/backups/{backup-name}/etcd-backup
+//
+//	{bsl-prefix}/backups/{backup-name}/etcd-backup
+//
 // so the etcd snapshot is stored alongside the rest of the backup data.
 func (o *Orchestrator) mapBSLToStorage(bsl *velerov1.BackupStorageLocation, backupName string) (*hyperv1.HCPEtcdBackupStorage, error) {
 	keyPrefix := fmt.Sprintf("backups/%s/etcd-backup", backupName)
@@ -387,4 +392,3 @@ func (o *Orchestrator) pollCondition(ctx context.Context, timeout time.Duration,
 		return check(cond)
 	})
 }
-
